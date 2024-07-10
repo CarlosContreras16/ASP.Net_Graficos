@@ -1,0 +1,144 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+    <div class="row" style="margin-top:20px">
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>L. HNL Totales de Ventas en Combustibles</b></div>
+                <div class="panel-body">
+                    <canvas id="myBarChart" width="100" height="50"></canvas>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-6">
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Gráfico de Ventas por tipo de Combustible</b></div>
+                <div class="panel-body">
+                    <canvas id="myPieChart" width="100" height="50"></canvas>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+@section scripts{
+    
+    <script>
+
+      
+
+   
+
+        jQuery.ajax({
+
+            url: '@Url.Action("Reporteventas","Home")',
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                console.log(data)
+                var arrayMeses = [];
+                var arrayCantidad = [];
+
+                for (var i = 0; i < data.length; i++) {
+                    //console.log(data[i].mes)
+                    arrayMeses.push(data[i].mes)
+                       arrayCantidad.push(data[i].cantidad)
+                }
+                  var controlBar = document.getElementById("myBarChart");
+
+
+        var graficoBar = new Chart(controlBar, {
+            type: 'bar',
+            data: {
+                labels: arrayMeses,
+                datasets: [
+                    {
+                        label: "reporte",
+                        backgroundColor: "#BB2100",
+                        data: arrayCantidad,
+                    }
+
+                ]
+
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: true
+
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines: {
+                            display: true
+
+                        }
+
+
+                    }]
+                }
+            }
+
+        })
+            },
+            error: function (error) {
+
+                console.log(error)
+            }
+
+
+
+        });
+
+
+          jQuery.ajax({
+
+            url: '@Url.Action("Reportedispensador","Home")',
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                 console.log(data)
+                var arraydispensador = [];
+                var arrayventas = [];
+
+                for (var i = 0; i < data.length; i++) {
+                    //console.log(data[i].mes)
+                    arraydispensador.push(data[i].nombre)
+                       arrayventas.push(data[i].venta)
+                }
+                      var controlPie = document.getElementById("myPieChart");
+                      var graficoPie = new Chart(controlPie, {
+                      type: 'pie',
+                        data: {
+                        labels: arraydispensador,
+                        datasets: [{
+                        data: arrayventas,
+                        backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745'],
+                         }],
+                      },
+                  });
+
+
+            },
+            error: function (error) {
+
+                console.log(error)
+            }
+
+
+
+        });        
+    </script>
+    }
